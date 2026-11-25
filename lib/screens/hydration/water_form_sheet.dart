@@ -36,6 +36,7 @@ class _WaterFormSheetState extends State<WaterFormSheet> {
   late DateTime _date;
   String? _dateError;
   bool _saving = false;
+  AutovalidateMode _autovalidate = AutovalidateMode.disabled;
 
   bool get _isEditing => widget.entry != null;
 
@@ -99,7 +100,11 @@ class _WaterFormSheetState extends State<WaterFormSheet> {
       DateTime.now().add(const Duration(minutes: 1)),
     );
     setState(() => _dateError = future ? 'La hora no puede ser futura' : null);
-    if (!valid || future) return;
+    if (!valid || future) {
+      setState(() => _autovalidate = AutovalidateMode.onUserInteraction);
+      return;
+    }
+    if (_saving) return;
     setState(() => _saving = true);
     final provider = context.read<HydrationProvider>();
     final entry = WaterEntry(
@@ -133,6 +138,7 @@ class _WaterFormSheetState extends State<WaterFormSheet> {
       padding: EdgeInsets.fromLTRB(16, 0, 16, 16 + bottom),
       child: Form(
         key: _formKey,
+        autovalidateMode: _autovalidate,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,

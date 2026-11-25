@@ -33,6 +33,7 @@ class _RoutineFormScreenState extends State<RoutineFormScreen> {
   late List<Exercise> _exercises;
   bool _exercisesError = false;
   bool _saving = false;
+  AutovalidateMode _autovalidate = AutovalidateMode.disabled;
 
   bool get _isEditing => widget.routine != null;
 
@@ -84,7 +85,11 @@ class _RoutineFormScreenState extends State<RoutineFormScreen> {
   Future<void> _save() async {
     final valid = _formKey.currentState!.validate();
     setState(() => _exercisesError = _exercises.isEmpty);
-    if (!valid || _exercises.isEmpty) return;
+    if (!valid || _exercises.isEmpty) {
+      setState(() => _autovalidate = AutovalidateMode.onUserInteraction);
+      return;
+    }
+    if (_saving) return;
 
     setState(() => _saving = true);
     final provider = context.read<RoutineProvider>();
@@ -142,6 +147,7 @@ class _RoutineFormScreenState extends State<RoutineFormScreen> {
       ),
       body: Form(
         key: _formKey,
+        autovalidateMode: _autovalidate,
         child: ListView(
           padding: const EdgeInsets.all(16),
           children: [

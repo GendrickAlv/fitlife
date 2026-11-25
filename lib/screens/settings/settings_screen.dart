@@ -23,6 +23,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
   late final TextEditingController _water;
   late final TextEditingController _steps;
   late final TextEditingController _workouts;
+  AutovalidateMode _autovalidate = AutovalidateMode.disabled;
+  bool _saving = false;
 
   @override
   void initState() {
@@ -81,7 +83,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Future<void> _save() async {
-    if (!_formKey.currentState!.validate()) return;
+    if (_saving) return;
+    if (!_formKey.currentState!.validate()) {
+      setState(() => _autovalidate = AutovalidateMode.onUserInteraction);
+      return;
+    }
+    setState(() => _saving = true);
     final provider = context.read<ProfileProvider>();
     final goalText = _goalWeight.text.trim();
     final updated = provider.profile.copyWith(
@@ -95,6 +102,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
     await provider.update(updated);
     if (!mounted) return;
+    setState(() => _saving = false);
     if (provider.error != null) {
       AppSnack.error(context, provider.error!);
     } else {
@@ -117,6 +125,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       appBar: AppBar(title: const Text('Perfil y ajustes')),
       body: Form(
         key: _formKey,
+        autovalidateMode: _autovalidate,
         child: ListView(
           padding: const EdgeInsets.all(16),
           children: [
@@ -136,6 +145,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               key: const ValueKey('name_field'),
               controller: _name,
               maxLength: 30,
+              textInputAction: TextInputAction.next,
               textCapitalization: TextCapitalization.words,
               decoration: const InputDecoration(
                 labelText: 'Nombre',
@@ -190,10 +200,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
               suffix: 'sesiones',
               icon: Icons.fitness_center,
               validator: _intInRange(1, 14),
+              action: TextInputAction.done,
             ),
             const SizedBox(height: 16),
             FilledButton.icon(
-              onPressed: _save,
+              onPressed: _saving ? null : _save,
               icon: const Icon(Icons.save_outlined),
               label: const Text('Guardar'),
             ),
@@ -255,6 +266,7 @@ class _NumberField extends StatelessWidget {
     required this.suffix,
     required this.icon,
     required this.validator,
+    this.action = TextInputAction.next,
   });
 
   final Key fieldKey;
@@ -263,6 +275,7 @@ class _NumberField extends StatelessWidget {
   final String suffix;
   final IconData icon;
   final String? Function(String?) validator;
+  final TextInputAction action;
 
   @override
   Widget build(BuildContext context) {
@@ -270,6 +283,7 @@ class _NumberField extends StatelessWidget {
       key: fieldKey,
       controller: controller,
       keyboardType: const TextInputType.numberWithOptions(decimal: true),
+      textInputAction: action,
       decoration: InputDecoration(
         labelText: label,
         suffixText: suffix,

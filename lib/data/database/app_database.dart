@@ -1,10 +1,8 @@
-import 'dart:io' show Platform;
-
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:path/path.dart' as p;
-import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:sqflite/sqflite.dart';
 
 import '../models/routine.dart';
+import 'db_platform.dart';
 
 /// Acceso singleton a la base de datos SQLite (esquema v1).
 class AppDatabase {
@@ -29,13 +27,9 @@ class AppDatabase {
   Database? _db;
   Future<Database>? _opening;
 
-  /// Configura `databaseFactory` para escritorio (Windows/Linux/macOS).
+  /// Configura `databaseFactory` según la plataforma (móvil, escritorio o web).
   static void initFactoryForPlatform() {
-    if (kIsWeb) return;
-    if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
-      sqfliteFfiInit();
-      databaseFactory = databaseFactoryFfi;
-    }
+    configureDatabaseFactory();
   }
 
   /// Base de datos abierta (se abre de forma perezosa).
@@ -56,7 +50,7 @@ class AppDatabase {
   Future<Database> _open() async {
     final path = _path ?? p.join(await getDatabasesPath(), _dbName);
     final factory = _path == inMemoryDatabasePath
-        ? databaseFactoryFfi
+        ? inMemoryDatabaseFactory
         : databaseFactory;
     return factory.openDatabase(
       path,

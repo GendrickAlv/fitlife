@@ -110,7 +110,9 @@ void main() {
     await tester.enterText(find.byType(TextFormField), '120');
     await tester.tap(find.text('Agregar'));
     await tester.pump();
-    await tester.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 100)));
+    await tester.runAsync(
+      () => Future<void>.delayed(const Duration(milliseconds: 100)),
+    );
     await tester.pump(const Duration(milliseconds: 700));
     expect(steps.todaySteps, 120);
   });
@@ -127,7 +129,10 @@ void main() {
     await tester.enterText(find.byKey(const ValueKey('water_field')), '100');
     await tester.enterText(find.byKey(const ValueKey('steps_field')), '999999');
     await tester.enterText(find.byKey(const ValueKey('workouts_field')), '20');
-    await tester.enterText(find.byKey(const ValueKey('goal_weight_field')), '5');
+    await tester.enterText(
+      find.byKey(const ValueKey('goal_weight_field')),
+      '5',
+    );
     await tester.tap(find.text('Guardar'));
     await tester.pump();
     expect(find.text('El nombre es obligatorio'), findsOneWidget);
@@ -146,7 +151,9 @@ void main() {
     expect(find.text('AG'), findsOneWidget);
     await tester.tap(find.text('Guardar'));
     await tester.pump();
-    await tester.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 100)));
+    await tester.runAsync(
+      () => Future<void>.delayed(const Duration(milliseconds: 100)),
+    );
     await tester.pump();
     expect(profile.profile.name, 'Ana Gil');
     expect(profile.profile.dailyStepGoal, 9000);

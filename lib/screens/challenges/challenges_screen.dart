@@ -70,9 +70,7 @@ class ChallengesScreen extends StatelessWidget {
         padding: const EdgeInsets.only(bottom: 96),
         children: [
           const _WeekHeader(),
-          _SuggestionsRow(
-            onSelected: (t) => _openForm(context, template: t),
-          ),
+          _SuggestionsRow(onSelected: (t) => _openForm(context, template: t)),
           const SectionHeader(title: 'Esta semana'),
           if (current.isEmpty)
             const Padding(
@@ -100,15 +98,12 @@ class ChallengesScreen extends StatelessWidget {
         body = Column(
           children: [
             const _WeekHeader(),
-            _SuggestionsRow(
-              onSelected: (t) => _openForm(context, template: t),
-            ),
+            _SuggestionsRow(onSelected: (t) => _openForm(context, template: t)),
             Expanded(
               child: EmptyState(
                 icon: Icons.emoji_events_outlined,
                 title: 'Aún no tienes desafíos',
-                message:
-                    'Crea un desafío semanal o elige una sugerencia para empezar.',
+                message: 'Crea un desafío semanal o elige una sugerencia para empezar.',
                 actionLabel: 'Nuevo desafío',
                 onAction: () => _openForm(context),
               ),
@@ -296,7 +291,9 @@ class _ChallengeCard extends StatelessWidget {
                   CircleAvatar(
                     backgroundColor: accent.withValues(alpha: 0.15),
                     foregroundColor: accent,
-                    child: Icon(done ? Icons.emoji_events : challenge.type.icon),
+                    child: Icon(
+                      done ? Icons.emoji_events : challenge.type.icon,
+                    ),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
@@ -373,10 +370,8 @@ class _DoneBadge extends StatelessWidget {
       ),
       child: Text(
         '¡Completado!',
-        style: Theme.of(context).textTheme.labelMedium?.copyWith(
-          color: scheme.onTertiary,
-          fontWeight: FontWeight.bold,
-        ),
+        style: Theme.of(context).textTheme.labelMedium
+            ?.copyWith(color: scheme.onTertiary, fontWeight: FontWeight.bold),
       ),
     );
   }
@@ -415,7 +410,11 @@ class _PastSection extends StatelessWidget {
                     done ? Icons.emoji_events : Icons.cancel_outlined,
                     color: done ? scheme.tertiary : scheme.outline,
                   ),
-                  title: Text(c.title, maxLines: 1, overflow: TextOverflow.ellipsis),
+                  title: Text(
+                    c.title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                   subtitle: Text(
                     '${Fmt.date(c.weekStart)} · ${_formatValue(c.type, v)} / '
                     '${_formatValue(c.type, c.target)} ${c.type.unit}\n'

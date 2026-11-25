@@ -1,5 +1,5 @@
 name: fitlife
-description: "A new Flutter project."
+description: "FitLife: app de salud y entrenamiento (rutinas, peso, hidratación, pasos y desafíos)."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -45,6 +45,7 @@ dependencies:
   intl: ^0.20.3
   flutter_localizations:
     sdk: flutter
+  sqflite_common_ffi_web: ^1.2.2
 
 dev_dependencies:
   flutter_test:

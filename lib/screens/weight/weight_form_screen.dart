@@ -26,6 +26,7 @@ class _WeightFormScreenState extends State<WeightFormScreen> {
   late final TextEditingController _note;
   late DateTime _date;
   bool _saving = false;
+  AutovalidateMode _autovalidate = AutovalidateMode.disabled;
 
   bool get _isEditing => widget.entry != null;
 
@@ -66,7 +67,11 @@ class _WeightFormScreenState extends State<WeightFormScreen> {
   }
 
   Future<void> _save() async {
-    if (!(_formKey.currentState?.validate() ?? false)) return;
+    if (_saving) return;
+    if (!(_formKey.currentState?.validate() ?? false)) {
+      setState(() => _autovalidate = AutovalidateMode.onUserInteraction);
+      return;
+    }
     setState(() => _saving = true);
     final provider = context.read<WeightProvider>();
     final entry = WeightEntry(
@@ -103,6 +108,7 @@ class _WeightFormScreenState extends State<WeightFormScreen> {
       body: SafeArea(
         child: Form(
           key: _formKey,
+          autovalidateMode: _autovalidate,
           child: ListView(
             padding: const EdgeInsets.all(16),
             children: [

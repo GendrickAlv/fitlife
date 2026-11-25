@@ -38,6 +38,7 @@ class _ActivityFormScreenState extends State<ActivityFormScreen> {
   int? _routineId;
   String? _dateError;
   bool _saving = false;
+  AutovalidateMode _autovalidate = AutovalidateMode.disabled;
 
   bool get _isEditing => widget.activity != null;
 
@@ -114,7 +115,11 @@ class _ActivityFormScreenState extends State<ActivityFormScreen> {
     setState(() {
       _dateError = inFuture ? 'La fecha no puede estar en el futuro' : null;
     });
-    if (!valid || inFuture) return;
+    if (!valid || inFuture) {
+      setState(() => _autovalidate = AutovalidateMode.onUserInteraction);
+      return;
+    }
+    if (_saving) return;
 
     setState(() => _saving = true);
     final provider = context.read<ActivityProvider>();
@@ -156,6 +161,7 @@ class _ActivityFormScreenState extends State<ActivityFormScreen> {
       ),
       body: Form(
         key: _formKey,
+        autovalidateMode: _autovalidate,
         child: ListView(
           padding: const EdgeInsets.all(16),
           children: [

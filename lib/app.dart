@@ -1,6 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
+import 'core/routes.dart';
 import 'core/theme/app_theme.dart';
 import 'data/database/app_database.dart';
 import 'data/repositories/activity_repository.dart';
@@ -18,24 +19,6 @@ import 'providers/routine_provider.dart';
 import 'providers/step_provider.dart';
 import 'providers/weight_provider.dart';
 import 'screens/shell/home_shell.dart';
-
-/// Nombres de rutas de la aplicación.
-class AppRoutes {
-  const AppRoutes._();
-
-  static const home = '/';
-  static const routines = '/routines';
-  static const routineDetail = '/routines/detail';
-  static const routineForm = '/routines/form';
-  static const history = '/history';
-  static const activityForm = '/history/form';
-  static const weight = '/weight';
-  static const hydration = '/hydration';
-  static const stats = '/stats';
-  static const challenges = '/challenges';
-  static const steps = '/steps';
-  static const settings = '/settings';
-}
 
 /// Raíz de la aplicación: providers + MaterialApp.
 class FitLifeApp extends StatelessWidget {
@@ -94,6 +77,7 @@ class _FitLifeMaterialApp extends StatelessWidget {
       supportedLocales: const [Locale('es'), Locale('en')],
       localizationsDelegates: GlobalMaterialLocalizations.delegates,
       home: const HomeShell(),
+      routes: AppRoutes.table,
     );
   }
 }

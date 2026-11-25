@@ -275,7 +275,10 @@ class _TrackingIndicatorState extends State<_TrackingIndicator>
             ),
           ),
           const SizedBox(width: 10),
-          Text('Contando pasos...', style: Theme.of(context).textTheme.bodyMedium),
+          Text(
+            'Contando pasos...',
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
         ],
       ),
     );
@@ -422,6 +425,7 @@ class _ManualStepsDialog extends StatefulWidget {
 class _ManualStepsDialogState extends State<_ManualStepsDialog> {
   final _formKey = GlobalKey<FormState>();
   final _controller = TextEditingController();
+  AutovalidateMode _autovalidate = AutovalidateMode.disabled;
 
   @override
   void dispose() {
@@ -440,6 +444,8 @@ class _ManualStepsDialogState extends State<_ManualStepsDialog> {
   void _submit() {
     if (_formKey.currentState!.validate()) {
       Navigator.of(context).pop(int.parse(_controller.text.trim()));
+    } else {
+      setState(() => _autovalidate = AutovalidateMode.onUserInteraction);
     }
   }
 
@@ -449,6 +455,7 @@ class _ManualStepsDialogState extends State<_ManualStepsDialog> {
       title: const Text('Agregar pasos'),
       content: Form(
         key: _formKey,
+        autovalidateMode: _autovalidate,
         child: TextFormField(
           controller: _controller,
           autofocus: true,

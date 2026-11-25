@@ -35,6 +35,7 @@ class _ExerciseSheetState extends State<ExerciseSheet> {
   late final TextEditingController _reps;
   late final TextEditingController _weight;
   late final TextEditingController _rest;
+  AutovalidateMode _autovalidate = AutovalidateMode.disabled;
 
   @override
   void initState() {
@@ -60,7 +61,10 @@ class _ExerciseSheetState extends State<ExerciseSheet> {
   }
 
   void _submit() {
-    if (!_formKey.currentState!.validate()) return;
+    if (!_formKey.currentState!.validate()) {
+      setState(() => _autovalidate = AutovalidateMode.onUserInteraction);
+      return;
+    }
     final weight = _weight.text.trim().isEmpty
         ? null
         : Validators.parseNumber(_weight.text);
@@ -87,6 +91,7 @@ class _ExerciseSheetState extends State<ExerciseSheet> {
         padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
         child: Form(
           key: _formKey,
+          autovalidateMode: _autovalidate,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,

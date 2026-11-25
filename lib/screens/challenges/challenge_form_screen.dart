@@ -44,6 +44,7 @@ class _ChallengeFormScreenState extends State<ChallengeFormScreen> {
   late ChallengeType _type;
   late DateTime _weekStart;
   bool _saving = false;
+  AutovalidateMode _autovalidate = AutovalidateMode.disabled;
 
   bool get _isEditing => widget.challenge != null;
 
@@ -93,7 +94,11 @@ class _ChallengeFormScreenState extends State<ChallengeFormScreen> {
   }
 
   Future<void> _save() async {
-    if (!_formKey.currentState!.validate()) return;
+    if (_saving) return;
+    if (!_formKey.currentState!.validate()) {
+      setState(() => _autovalidate = AutovalidateMode.onUserInteraction);
+      return;
+    }
     setState(() => _saving = true);
     final provider = context.read<ChallengeProvider>();
     final navigator = Navigator.of(context);
@@ -131,12 +136,14 @@ class _ChallengeFormScreenState extends State<ChallengeFormScreen> {
       ),
       body: Form(
         key: _formKey,
+        autovalidateMode: _autovalidate,
         child: ListView(
           padding: const EdgeInsets.all(16),
           children: [
             TextFormField(
               controller: _title,
               maxLength: 50,
+              textInputAction: TextInputAction.next,
               textCapitalization: TextCapitalization.sentences,
               decoration: const InputDecoration(
                 labelText: 'Título',
@@ -152,6 +159,7 @@ class _ChallengeFormScreenState extends State<ChallengeFormScreen> {
               controller: _description,
               maxLength: 200,
               maxLines: 3,
+              textInputAction: TextInputAction.next,
               textCapitalization: TextCapitalization.sentences,
               decoration: const InputDecoration(
                 labelText: 'Descripción (opcional)',
@@ -161,7 +169,10 @@ class _ChallengeFormScreenState extends State<ChallengeFormScreen> {
               validator: Validators.maxLength(200),
             ),
             const SizedBox(height: 12),
-            Text('Tipo de desafío', style: Theme.of(context).textTheme.titleSmall),
+            Text(
+              'Tipo de desafío',
+              style: Theme.of(context).textTheme.titleSmall,
+            ),
             const SizedBox(height: 8),
             Wrap(
               spacing: 8,
@@ -222,9 +233,8 @@ class _ChallengeFormScreenState extends State<ChallengeFormScreen> {
             Text(
               '${Fmt.date(_weekStart)} - '
               '${Fmt.date(DateTime(_weekStart.year, _weekStart.month, _weekStart.day + 6))}',
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: scheme.onSurfaceVariant,
-              ),
+              style: Theme.of(context).textTheme.bodySmall
+                  ?.copyWith(color: scheme.onSurfaceVariant),
             ),
             const SizedBox(height: 24),
             FilledButton.icon(

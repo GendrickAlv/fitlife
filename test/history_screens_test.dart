@@ -58,6 +58,28 @@ void main() {
     expect(find.text('Introduce un número'), findsNWidgets(2));
   });
 
+  testWidgets('ActivityFormScreen limpia el error del título al escribir '
+      'sin volver a guardar', (tester) async {
+    tester.view.physicalSize = const Size(360 * 3, 800 * 3);
+    tester.view.devicePixelRatio = 3;
+    addTearDown(tester.view.reset);
+
+    final db = AppDatabase.forTesting();
+    await tester.runAsync(() => db.database);
+    await tester.pumpWidget(_app(db, const ActivityFormScreen()));
+    await tester.pump();
+
+    await tester.ensureVisible(find.text('Guardar actividad'));
+    await tester.tap(find.text('Guardar actividad'));
+    await tester.pump();
+    expect(find.text('El título es obligatorio'), findsOneWidget);
+
+    await tester.enterText(find.byType(TextFormField).first, 'Correr');
+    await tester.pump();
+
+    expect(find.text('El título es obligatorio'), findsNothing);
+  });
+
   testWidgets('HistoryScreen sin datos muestra el estado vacío', (
     tester,
   ) async {
