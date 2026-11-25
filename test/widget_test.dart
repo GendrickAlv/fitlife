@@ -1,30 +1,31 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter_test/flutter_test.dart';
-import 'package:material_ui/material_ui.dart';
-
-import 'package:fitlife/main.dart';
+import 'package:fitlife/app.dart';
+import 'package:fitlife/data/database/app_database.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  setUpAll(() async {
+    sqfliteFfiInit();
+    await initializeDateFormatting('es');
+  });
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+  testWidgets('FitLifeApp muestra la navegación inferior', (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    final db = AppDatabase.forTesting(seed: true);
+    await tester.runAsync(() => db.database);
+    await tester.pumpWidget(FitLifeApp(database: db));
+    await tester.pump(const Duration(milliseconds: 200));
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
+    expect(find.text('Inicio'), findsWidgets);
+    expect(find.text('Rutinas'), findsOneWidget);
+    expect(find.text('Historial'), findsOneWidget);
+    expect(find.text('Progreso'), findsOneWidget);
+    expect(find.text('Más'), findsWidgets);
+
+    await tester.tap(find.text('Más').last);
     await tester.pump();
-
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    expect(find.text('Acerca de'), findsOneWidget);
   });
 }

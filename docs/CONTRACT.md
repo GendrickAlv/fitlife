@@ -3,6 +3,10 @@
 App Flutter (Dart 3, Material 3). Idioma de la UI: **español**. Código (identificadores) en inglés.
 Paquete: `fitlife`. Plataformas objetivo: Android (principal), Windows/desktop para desarrollo.
 
+> **IMPORTANTE (Flutter 3.50):** Material vive en el paquete `material_ui`. Importar SIEMPRE
+> `import 'package:material_ui/material_ui.dart';` (NO `package:flutter/material.dart`).
+> Ejecutar Flutter con `$env:Path="$env:USERPROFILE\flutter\bin;$env:Path"` en PowerShell.
+
 ## Dependencias (pubspec)
 - `provider` — gestión de estado (ChangeNotifier + MultiProvider)
 - `sqflite` + `sqflite_common_ffi` (desktop/tests) + `path` — persistencia SQLite
