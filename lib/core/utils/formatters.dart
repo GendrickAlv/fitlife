@@ -35,4 +35,15 @@ class Fmt {
   /// Entero con separador de miles.
   static String integer(num v) =>
       NumberFormat.decimalPattern(_locale).format(v.round());
+
+  /// Número con coma decimal y hasta [maxDecimals] decimales (sin ceros
+  /// sobrantes): 60,5 / 20 / 6.500.
+  static String decimal(num value, {int maxDecimals = 1}) {
+    final frac = maxDecimals <= 0 ? '' : '.${'#' * maxDecimals}';
+    return NumberFormat('#,##0$frac', _locale).format(value);
+  }
+
+  /// "1 ejercicio" / "3 ejercicios" (miles con punto).
+  static String plural(int n, String singular, String plural) =>
+      '${integer(n)} ${n == 1 ? singular : plural}';
 }

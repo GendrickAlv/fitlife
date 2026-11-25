@@ -26,7 +26,10 @@ class StepCounterScreen extends StatelessWidget {
     if (count == null) return;
     await provider.addManualSteps(count);
     if (context.mounted) {
-      AppSnack.success(context, '$count pasos agregados');
+      AppSnack.success(
+        context,
+        '${Fmt.integer(count)} ${count == 1 ? 'paso agregado' : 'pasos agregados'}',
+      );
     }
   }
 
@@ -130,7 +133,7 @@ class _Metrics extends StatelessWidget {
           child: _MetricTile(
             icon: Icons.straighten,
             label: 'Distancia',
-            value: '${km.toStringAsFixed(2).replaceAll('.', ',')} km',
+            value: '${Fmt.decimal(km, maxDecimals: 2)} km',
           ),
         ),
         const SizedBox(width: 12),
@@ -138,7 +141,7 @@ class _Metrics extends StatelessWidget {
           child: _MetricTile(
             icon: Icons.local_fire_department_outlined,
             label: 'Calorías',
-            value: '${kcal.round()} kcal',
+            value: '${Fmt.integer(kcal)} kcal',
           ),
         ),
       ],

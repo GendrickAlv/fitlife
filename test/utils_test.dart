@@ -1,8 +1,35 @@
 import 'package:fitlife/core/utils/date_utils.dart';
+import 'package:fitlife/core/utils/formatters.dart';
 import 'package:fitlife/core/utils/validators.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 void main() {
+  setUpAll(() => initializeDateFormatting('es'));
+
+  group('Fmt', () {
+    test('plural usa singular solo con 1', () {
+      expect(Fmt.plural(0, 'ejercicio', 'ejercicios'), '0 ejercicios');
+      expect(Fmt.plural(1, 'ejercicio', 'ejercicios'), '1 ejercicio');
+      expect(Fmt.plural(3, 'ejercicio', 'ejercicios'), '3 ejercicios');
+      expect(Fmt.plural(1500, 'paso', 'pasos'), '1.500 pasos');
+    });
+    test('decimal usa coma y separador de miles', () {
+      expect(Fmt.decimal(60.5), '60,5');
+      expect(Fmt.decimal(20.0), '20');
+      expect(Fmt.decimal(0.8), '0,8');
+      expect(Fmt.decimal(6500), '6.500');
+      expect(Fmt.decimal(0.25, maxDecimals: 2), '0,25');
+      expect(Fmt.decimal(2.6, maxDecimals: 0), '3');
+    });
+    test('mensaje de rango de validators usa coma', () {
+      expect(
+        Validators.numberInRange(0.5, 20)('99'),
+        'Debe estar entre 0,5 y 20',
+      );
+    });
+  });
+
   group('Validators', () {
     test('required', () {
       expect(Validators.required(null), isNotNull);

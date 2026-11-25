@@ -46,8 +46,9 @@ class Validators {
     };
   }
 
-  static String _fmt(double v) =>
-      v == v.roundToDouble() ? v.toInt().toString() : v.toString();
+  static String _fmt(double v) => v == v.roundToDouble()
+      ? v.toInt().toString()
+      : v.toString().replaceAll('.', ',');
 }
 
 /// Firma de validador de texto.

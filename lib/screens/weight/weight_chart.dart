@@ -57,19 +57,27 @@ class WeightChart extends StatelessWidget {
                 showTitles: true,
                 reservedSize: 40,
                 interval: interval,
-                getTitlesWidget: (v, meta) => SideTitleWidget(
-                  meta: meta,
-                  child: Text(
-                    v.toStringAsFixed(0),
-                    style: theme.textTheme.labelSmall,
-                  ),
-                ),
+                getTitlesWidget: (v, meta) {
+                  // Solo marcas regulares: evita que min/max (p. ej. 79) se
+                  // peguen a la marca de intervalo contigua (80).
+                  final ratio = v / interval;
+                  if ((ratio - ratio.roundToDouble()).abs() > 1e-6) {
+                    return const SizedBox.shrink();
+                  }
+                  return SideTitleWidget(
+                    meta: meta,
+                    child: Text(
+                      Fmt.decimal(v, maxDecimals: 0),
+                      style: theme.textTheme.labelSmall,
+                    ),
+                  );
+                },
               ),
             ),
             bottomTitles: AxisTitles(
               sideTitles: SideTitles(
                 showTitles: true,
-                reservedSize: 28,
+                reservedSize: 32,
                 interval: 1,
                 getTitlesWidget: (v, meta) {
                   final i = v.round();
@@ -81,6 +89,7 @@ class WeightChart extends StatelessWidget {
                   if (!show) return const SizedBox.shrink();
                   return SideTitleWidget(
                     meta: meta,
+                    fitInside: SideTitleFitInsideData.fromTitleMeta(meta),
                     child: Text(
                       dayFmt.format(entries[i].date),
                       style: theme.textTheme.labelSmall,

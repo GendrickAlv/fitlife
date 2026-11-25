@@ -159,7 +159,7 @@ class _QuickAddRow extends StatelessWidget {
           FilledButton.tonalIcon(
             onPressed: () => _add(context, ml),
             icon: Icon(_iconFor(ml)),
-            label: Text('$ml ml'),
+            label: Text(Fmt.ml(ml)),
           ),
         OutlinedButton.icon(
           onPressed: () => WaterFormSheet.show(context),
@@ -206,7 +206,7 @@ class _WeeklyCard extends StatelessWidget {
               child: StatCard(
                 icon: Icons.emoji_events_outlined,
                 label: 'Meta cumplida',
-                value: '$daysMet/${totals.length} días',
+                value: '$daysMet/${Fmt.plural(totals.length, 'día', 'días')}',
                 color: AppColors.steps,
               ),
             ),

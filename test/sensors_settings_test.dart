@@ -117,6 +117,34 @@ void main() {
     expect(steps.todaySteps, 120);
   });
 
+  testWidgets('StepCounterScreen muestra aviso si el sensor nunca emite', (
+    tester,
+  ) async {
+    final controller = StreamController<({double x, double y, double z})>();
+    final steps = StepProvider(
+      StepRepository(db),
+      accelerometer: () => controller.stream,
+      sensorTimeout: const Duration(milliseconds: 50),
+    );
+    await tester.pumpWidget(wrap(const StepCounterScreen(), steps: steps));
+    await tester.tap(find.text('Iniciar conteo'));
+    await tester.pump();
+    expect(find.text('Contando pasos...'), findsOneWidget);
+
+    await tester.runAsync(
+      () => Future<void>.delayed(const Duration(milliseconds: 150)),
+    );
+    await tester.pump(const Duration(milliseconds: 700));
+    expect(steps.isSupported, isFalse);
+    expect(find.text('Contando pasos...'), findsNothing);
+    expect(
+      find.textContaining('no tiene acelerómetro disponible'),
+      findsOneWidget,
+    );
+    expect(find.text('Agregar pasos'), findsOneWidget);
+    await tester.runAsync(() => controller.close());
+  });
+
   testWidgets('SettingsScreen valida y guarda', (tester) async {
     final profile = ProfileProvider(const ProfileRepository());
     await tester.binding.setSurfaceSize(const Size(360, 1400));

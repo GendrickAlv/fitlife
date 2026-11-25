@@ -2,6 +2,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 import '../../core/constants.dart';
+import '../../core/utils/formatters.dart';
 import '../../core/utils/validators.dart';
 import '../../data/models/routine.dart';
 import '../../providers/routine_provider.dart';
@@ -378,7 +379,11 @@ class _ExercisesSection extends StatelessWidget {
 /// Resumen legible de un ejercicio: "3 x 12 · 20 kg · descanso 60 s".
 String exerciseSummary(Exercise e) {
   final parts = <String>['${e.sets} x ${e.reps}'];
-  if (e.weightKg != null) parts.add('${FormRules.num(e.weightKg!)} kg');
-  if (e.restSeconds != null) parts.add('descanso ${e.restSeconds} s');
+  if (e.weightKg != null) {
+    parts.add('${Fmt.decimal(e.weightKg!, maxDecimals: 2)} kg');
+  }
+  if (e.restSeconds != null) {
+    parts.add('descanso ${Fmt.integer(e.restSeconds!)} s');
+  }
   return parts.join(' · ');
 }

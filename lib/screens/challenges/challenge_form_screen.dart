@@ -71,8 +71,9 @@ class _ChallengeFormScreenState extends State<ChallengeFormScreen> {
     super.dispose();
   }
 
-  static String _formatTarget(double v) =>
-      v == v.roundToDouble() ? v.toInt().toString() : v.toString();
+  static String _formatTarget(double v) => v == v.roundToDouble()
+      ? v.toInt().toString()
+      : v.toString().replaceAll('.', ',');
 
   DateTime get _thisWeek => DateUtilsX.startOfWeek(DateTime.now());
 

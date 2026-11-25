@@ -37,6 +37,7 @@ class FormRules {
   }
 
   /// Formatea un número sin decimales superfluos (20.0 -> "20").
-  static String num(double v) =>
-      v == v.roundToDouble() ? v.toInt().toString() : v.toString();
+  static String num(double v) => v == v.roundToDouble()
+      ? v.toInt().toString()
+      : v.toString().replaceAll('.', ',');
 }

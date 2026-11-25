@@ -152,7 +152,7 @@ class _BmiRow extends StatelessWidget {
         const SizedBox(width: 8),
         Text('IMC ', style: theme.textTheme.bodyMedium),
         Text(
-          bmi.toStringAsFixed(1).replaceAll('.', ','),
+          Fmt.decimal(bmi),
           style: theme.textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.bold,
           ),

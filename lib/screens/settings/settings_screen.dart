@@ -53,8 +53,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   void _onName() => setState(() {});
 
-  static String _num(double v) =>
-      v == v.roundToDouble() ? v.toInt().toString() : v.toString();
+  static String _num(double v) => v == v.roundToDouble()
+      ? v.toInt().toString()
+      : v.toString().replaceAll('.', ',');
 
   static String _initials(String name) {
     final parts = name.trim().split(RegExp(r'\s+')).where((s) => s.isNotEmpty);

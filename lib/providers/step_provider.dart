@@ -19,8 +19,13 @@ class StepProvider extends ChangeNotifier {
     this._repository, {
     AccelerationStream? accelerometer,
     DateTime Function()? clock,
+    this.sensorTimeout = const Duration(seconds: 4),
   }) : _accelerometer = accelerometer ?? _defaultStream,
        _clock = clock ?? DateTime.now;
+
+  /// Tiempo máximo de espera de una primera muestra real del sensor; si no
+  /// llega (p. ej. web/escritorio sin acelerómetro) se marca como no soportado.
+  final Duration sensorTimeout;
 
   /// Umbral de magnitud para detectar un paso (m/s²).
   static const double stepThreshold = 11.5;
@@ -39,6 +44,7 @@ class StepProvider extends ChangeNotifier {
   final DateTime Function() _clock;
 
   StreamSubscription<({double x, double y, double z})>? _sub;
+  Timer? _watchdog;
   List<StepRecord> _history = const [];
   int _todaySteps = 0;
   String _currentDay = '';
@@ -118,6 +124,7 @@ class StepProvider extends ChangeNotifier {
       _sub = _accelerometer().listen(
         _onEvent,
         onError: (Object e) {
+          _cancelWatchdog();
           _isSupported = false;
           _isTracking = false;
           _sub?.cancel();
@@ -128,6 +135,8 @@ class StepProvider extends ChangeNotifier {
       );
       _isTracking = true;
       _isSupported = true;
+      _watchdog?.cancel();
+      _watchdog = Timer(sensorTimeout, _onSensorTimeout);
     } catch (_) {
       _isSupported = false;
       _isTracking = false;
@@ -137,6 +146,7 @@ class StepProvider extends ChangeNotifier {
 
   /// Detiene el conteo y persiste.
   Future<void> stop() async {
+    _cancelWatchdog();
     await _sub?.cancel();
     _sub = null;
     _isTracking = false;
@@ -152,7 +162,25 @@ class StepProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void _cancelWatchdog() {
+    _watchdog?.cancel();
+    _watchdog = null;
+  }
+
+  /// No llegó ninguna muestra real: no hay acelerómetro utilizable.
+  void _onSensorTimeout() {
+    _watchdog = null;
+    _sub?.cancel();
+    _sub = null;
+    _isTracking = false;
+    _isSupported = false;
+    notifyListeners();
+  }
+
   void _onEvent(({double x, double y, double z}) e) {
+    // (0, 0, 0) lo emite sensors_plus al fallar la construcción: no es dato.
+    if (e.x == 0 && e.y == 0 && e.z == 0) return;
+    _cancelWatchdog();
     final magnitude = math.sqrt(e.x * e.x + e.y * e.y + e.z * e.z);
     if (magnitude < rearmThreshold) {
       _armed = true;
@@ -201,6 +229,7 @@ class StepProvider extends ChangeNotifier {
 
   @override
   void dispose() {
+    _cancelWatchdog();
     _sub?.cancel();
     super.dispose();
   }

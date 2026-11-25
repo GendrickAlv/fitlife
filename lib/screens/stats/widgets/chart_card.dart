@@ -116,6 +116,7 @@ AxisTitles bottomDayTitles(BuildContext context, List<DateTime> days) {
         if (i % step != 0) return const SizedBox.shrink();
         return SideTitleWidget(
           meta: meta,
+          fitInside: SideTitleFitInsideData.fromTitleMeta(meta),
           child: Text(dayAxisLabel(days, i), style: style),
         );
       },

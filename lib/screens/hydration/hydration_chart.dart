@@ -53,7 +53,7 @@ class HydrationWeekChart extends StatelessWidget {
                 getTitlesWidget: (v, meta) => SideTitleWidget(
                   meta: meta,
                   child: Text(
-                    (v / 1000).toStringAsFixed(1).replaceAll('.', ','),
+                    Fmt.decimal(v / 1000),
                     style: theme.textTheme.labelSmall,
                   ),
                 ),

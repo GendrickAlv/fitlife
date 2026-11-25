@@ -2,6 +2,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 import '../../core/constants.dart';
+import '../../core/utils/formatters.dart';
 import '../../data/models/routine.dart';
 import '../../providers/routine_provider.dart';
 import '../../widgets/empty_state.dart';
@@ -220,7 +221,11 @@ class _RoutineCard extends StatelessWidget {
                         ),
                         _Meta(
                           icon: Icons.list_alt,
-                          text: '${routine.exercises.length} ejercicios',
+                          text: Fmt.plural(
+                            routine.exercises.length,
+                            'ejercicio',
+                            'ejercicios',
+                          ),
                         ),
                       ],
                     ),

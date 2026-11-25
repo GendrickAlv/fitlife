@@ -1,5 +1,6 @@
 import 'package:fitlife/core/theme/app_theme.dart';
 import 'package:fitlife/data/database/app_database.dart';
+import 'package:fitlife/data/models/routine.dart';
 import 'package:fitlife/data/repositories/activity_repository.dart';
 import 'package:fitlife/data/repositories/routine_repository.dart';
 import 'package:fitlife/providers/activity_provider.dart';
@@ -36,6 +37,25 @@ void main() {
   setUpAll(() async {
     sqfliteFfiInit();
     await initializeDateFormatting('es');
+  });
+
+  test('exerciseSummary formatea con coma decimal y miles con punto', () {
+    expect(
+      exerciseSummary(
+        const Exercise(
+          name: 'Press',
+          sets: 3,
+          reps: 12,
+          weightKg: 60.5,
+          restSeconds: 90,
+        ),
+      ),
+      '3 x 12 · 60,5 kg · descanso 90 s',
+    );
+    expect(
+      exerciseSummary(const Exercise(name: 'Flexiones', sets: 4, reps: 10)),
+      '4 x 10',
+    );
   });
 
   testWidgets('RoutineFormScreen vacío muestra errores de validación', (

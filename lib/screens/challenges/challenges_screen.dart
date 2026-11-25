@@ -161,7 +161,7 @@ class _WeekHeader extends StatelessWidget {
                   Text(
                     remaining == 1
                         ? 'Último día de la semana'
-                        : 'Quedan $remaining días',
+                        : 'Quedan ${Fmt.plural(remaining, 'día', 'días')}',
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: scheme.onPrimaryContainer,
                     ),
@@ -245,12 +245,8 @@ class _NoCurrentChallenges extends StatelessWidget {
   }
 }
 
-String _formatValue(ChallengeType type, double v) {
-  if (type == ChallengeType.water) {
-    return v == v.roundToDouble() ? Fmt.integer(v) : v.toStringAsFixed(1);
-  }
-  return Fmt.integer(v);
-}
+String _formatValue(ChallengeType type, double v) =>
+    Fmt.decimal(v, maxDecimals: type == ChallengeType.water ? 1 : 0);
 
 /// Tarjeta de un desafío con su progreso.
 class _ChallengeCard extends StatelessWidget {
@@ -398,7 +394,7 @@ class _PastSection extends StatelessWidget {
       padding: const EdgeInsets.only(top: 8),
       child: ExpansionTile(
         title: const Text('Semanas anteriores'),
-        subtitle: Text('${challenges.length} desafíos'),
+        subtitle: Text(Fmt.plural(challenges.length, 'desafío', 'desafíos')),
         children: [
           for (final c in challenges)
             Builder(

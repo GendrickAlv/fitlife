@@ -252,7 +252,7 @@ class _StatsGrid extends StatelessWidget {
               child: StatCard(
                 icon: Icons.local_fire_department,
                 label: 'Racha',
-                value: streak == 1 ? '1 día' : '$streak días',
+                value: Fmt.plural(streak, 'día', 'días'),
                 subtitle: streak == 0
                     ? '¡Entrena hoy!'
                     : 'Días activos seguidos',
@@ -269,7 +269,7 @@ class _StatsGrid extends StatelessWidget {
               child: StatCard(
                 icon: Icons.timer_outlined,
                 label: 'Minutos hoy',
-                value: '$minutes min',
+                value: '${Fmt.integer(minutes)} min',
                 color: AppColors.minutes,
               ),
             ),
@@ -421,7 +421,7 @@ class _ChallengeTile extends StatelessWidget {
               ),
               const SizedBox(height: 6),
               Text(
-                '${Fmt.integer(current)} / ${Fmt.integer(challenge.target)} $unit',
+                '${Fmt.decimal(current)} / ${Fmt.decimal(challenge.target)} $unit',
                 style: theme.textTheme.bodySmall?.copyWith(
                   color: theme.colorScheme.onSurfaceVariant,
                 ),
