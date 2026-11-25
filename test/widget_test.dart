@@ -15,7 +15,11 @@ void main() {
     SharedPreferences.setMockInitialValues({});
     final db = AppDatabase.forTesting(seed: true);
     await tester.runAsync(() => db.database);
-    await tester.pumpWidget(FitLifeApp(database: db));
+    // Las consultas SQLite reales deben resolverse fuera del reloj falso.
+    await tester.runAsync(() async {
+      await tester.pumpWidget(FitLifeApp(database: db));
+      await Future<void>.delayed(const Duration(milliseconds: 500));
+    });
     await tester.pump(const Duration(milliseconds: 200));
 
     expect(find.text('Inicio'), findsWidgets);
